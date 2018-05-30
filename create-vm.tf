@@ -84,7 +84,7 @@ resource "null_resource" "configure" {
     type = "ssh"
         user = "centos"
         agent = false
-        private_key = "${file(${var.ssh_key_file})}"
+        private_key = "${file("${var.ssh_key_file}")}"
         host = "${var.vm_fip}"
   }
 
@@ -104,7 +104,7 @@ resource "null_resource" "bootstrap-gpfs" {
     type = "ssh"
         user = "centos"
         agent = false
-        private_key = "${file(${var.ssh_key_file})}"
+        private_key = "${file("${var.ssh_key_file}")}"
         host = "${var.vm_fip}"
   }
 
