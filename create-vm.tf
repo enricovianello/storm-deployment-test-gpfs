@@ -44,6 +44,11 @@ variable "vm_network_ipv4" {
   default = "10.50.9.114"
 }
 
+variable "ssh_key_file" {
+  type = "string"
+  default = ".ssh/id_rsa"
+}
+
 # Provider settings
 provider "openstack" {
   user_name = "${var.mw_username}"
@@ -71,4 +76,43 @@ resource "openstack_compute_instance_v2" "test" {
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   floating_ip = "${var.vm_fip}"
   instance_id = "${openstack_compute_instance_v2.test.id}"
+}
+
+# Upload configuration scripts
+resource "null_resource" "configure" {
+  connection {
+    type = "ssh"
+        user = "centos"
+        agent = false
+        private_key = "${var.ssh_key_file}"
+        host = "${var.vm_fip}"
+  }
+
+  provisioner "file" {
+        source = "conf/"
+        destination = "/home/centos"
+  }
+
+  depends_on = [
+    "openstack_compute_floatingip_associate_v2.fip_1",
+  ]
+}
+
+# Boostrap as GPFS cluster client
+resource "null_resource" "bootstrap-gpfs" {
+  connection {
+    type = "ssh"
+        user = "centos"
+        agent = false
+        private_key = "${var.ssh_key_file}"
+        host = "${var.vm_fip}"
+  }
+
+  provisioner "remote-exec" {
+        inline = "sudo sh bootstrap-gpfs.sh"
+  }
+
+  depends_on = [
+    "null_resource.configure",
+  ]
 }
