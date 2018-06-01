@@ -10,7 +10,7 @@ pipeline {
   parameters {
     choice(name: 'MODE', choices: "clean\nupdate", description: '')
     choice(name: 'PLATFORM', choices: "centos6", description: '')
-    string(name: 'VM_IMAGE', defaultValue: 'centos-6-1804-x86_64-generic-gpfs-client', description: 'Cloud VM machine image source')
+    string(name: 'VM_IMAGE', defaultValue: 'centos-6-1804-x86_64-generic-gpfs-client-certs', description: 'Cloud VM machine image source')
     string(name: 'VM_NAME', defaultValue: 'cloud-vm127', description: 'Cloud VM machine name')
     string(name: 'VM_FLOATING_IP', defaultValue: '131.154.96.127', description: 'Floating IP')
     string(name: 'VM_FLAVOR', defaultValue: 'm1.medium', description: 'Machine flavor')
