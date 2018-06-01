@@ -64,7 +64,7 @@ resource "openstack_compute_instance_v2" "test" {
   image_name = "${var.vm_image}"
   flavor_name = "${var.vm_flavor}"
   key_pair = "jenkins"
-  security_groups = ["default"]
+  security_groups = ["default", "storm"]
 
   network {
     name = "${var.vm_network_name}"
