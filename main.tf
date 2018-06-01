@@ -1,4 +1,14 @@
 # Input variables
+variable "mode" {
+  type = "string"
+  default = "clean"
+}
+
+variable "platform" {
+  type = "string"
+  default = "centos6"
+}
+
 variable "vm_fip" {
   type = "string"
   default = "131.154.96.127"
@@ -11,7 +21,6 @@ variable "mw_username" {
 
 variable "mw_password" {
   type = "string"
-  default = "password"
 }
 
 variable "mw_tenant" {
@@ -47,6 +56,15 @@ variable "vm_network_ipv4" {
 variable "ssh_key_file" {
   type = "string"
   default = "/home/jenkins/.ssh/id_rsa"
+}
+
+variable "storage_root_dir" {
+  type = "string"
+}
+
+variable "vm_fqdn_hostname" {
+  type = "string"
+  default = "cloud-vm127.cloud.cnaf.infn.it"
 }
 
 # Provider settings
@@ -147,7 +165,7 @@ resource "null_resource" "deploy" {
   }
 
   provisioner "remote-exec" {
-        inline = "sudo sh deploy.sh"
+        inline = "sudo sh deploy.sh ${var.mode} ${var.platform} ${var.storage_root_dir} ${var.vm_fqdn_hostname}"
   }
 
   depends_on = [

@@ -1,6 +1,11 @@
 #!/bin/bash
 set -ex
 
+MODE=$1
+PLATFORM=$2
+STORAGE_ROOT_DIR=$3
+HOSTNAME=$4
+
 REPOSITORY="${REPOSITORY:-"https://github.com/italiangrid/storm-deployment-test.git"}"
 BRANCH="${BRANCH:-"gpfs"}"
 MODE="${MODE:-"clean"}"

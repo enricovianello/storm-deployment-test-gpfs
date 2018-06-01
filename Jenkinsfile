@@ -8,7 +8,9 @@ pipeline {
   }
 
   parameters {
-    string(name: 'VM_IMAGE',   defaultValue: 'centos-6-1804-x86_64-generic-gpfs-client', description: 'Cloud VM machine image source')
+    choice(name: 'MODE', choices: "clean\nupdate", description: '')
+    choice(name: 'PLATFORM', choices: "centos6", description: '')
+    string(name: 'VM_IMAGE', defaultValue: 'centos-6-1804-x86_64-generic-gpfs-client', description: 'Cloud VM machine image source')
     string(name: 'VM_NAME', defaultValue: 'cloud-vm127', description: 'Cloud VM machine name')
     string(name: 'VM_FLOATING_IP', defaultValue: '131.154.96.127', description: 'Floating IP')
     string(name: 'VM_FLAVOR', defaultValue: 'm1.medium', description: 'Machine flavor')
@@ -23,33 +25,33 @@ pipeline {
     VM_FLOATING_IP = "${params.VM_FLOATING_IP}"
     VM_FLAVOR = "${params.VM_FLAVOR}"
     VM_FQDN = "${params.VM_FQDN}"
+    STORAGE_ROOT_DIR = "/storage/${BUILD_TAG}"
   }
 
   stages {
-    stage('create-vm'){
+    stage('create-and-run'){
       steps {
         container('generic-runner') {
           withCredentials([
             usernamePassword(credentialsId: 'openstack-mw-devel-user', passwordVariable: 'mw_password', usernameVariable: 'mw_username')
           ]) {
+            def varList = []
+            varList.add("-var 'mw_username=${mw_username}'")
+            varList.add("-var 'mw_password=${mw_password}'")
+            varList.add("-var 'mode=${params.MODE}'")
+            varList.add("-var 'platform=${params.PLATFORM}'")
+            varList.add("-var 'storage_root_dir=${env.STORAGE_ROOT_DIR}'")
+            def vars = varList.join(' ')
+            echo "vars: ${vars}"
+
             sh 'terraform init -input=false'
-            sh "terraform plan -var 'mw_username=${mw_username}' -var 'mw_password=${mw_password}' -out=tfplan -input=false"
+            sh "terraform plan ${vars} -out=tfplan -input=false"
             sh 'terraform apply -input=false tfplan'
           }
         }
       }
     }
-    stage('deploy-storm'){
-      steps {
-        container('generic-runner') {
-          git url: "${env.REPOSITORY}", branch: "${env.BRANCH}"
-          dir ("storm-deployment-test") {
-            sh "HOSTNAME=${VM_FQDN} STORAGE_ROOT_DIR=/storage/${BUILD_TAG} sudo sh run.sh"
-          }
-        }
-      }
-    }
-    stage('destroy-vm'){
+    stage('destroy'){
       steps {
         container('generic-runner') {
           withCredentials([
