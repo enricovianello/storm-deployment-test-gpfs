@@ -50,7 +50,7 @@ puppet apply --debug -v \
   manifest.pp
 
 echo "Install acl and extended attributes support ..."
-yum install -y attr acl
+yum install -y attr acl ntp
 
 echo "Install fetch-crl ..."
 yum install -y fetch-crl
