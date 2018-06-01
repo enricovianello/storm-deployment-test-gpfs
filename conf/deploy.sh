@@ -21,9 +21,6 @@ if [ -z "$HOSTNAME" ]; then
     exit 1
 fi
 
-echo "Fix hostname resolution ..."
-echo "10.50.9.114   ${HOSTNAME}" >> /etc/hosts
-
 echo "Cloning ${REPOSITORY} ..."
 git clone ${REPOSITORY} --branch ${BRANCH}
 
