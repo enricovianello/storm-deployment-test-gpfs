@@ -35,18 +35,18 @@ pipeline {
           withCredentials([
             usernamePassword(credentialsId: 'openstack-mw-devel-user', passwordVariable: 'mw_password', usernameVariable: 'mw_username')
           ]) {
-            def varList = []
-            varList.add("-var 'mw_username=${mw_username}'")
-            varList.add("-var 'mw_password=${mw_password}'")
-            varList.add("-var 'mode=${params.MODE}'")
-            varList.add("-var 'platform=${params.PLATFORM}'")
-            varList.add("-var 'storage_root_dir=${env.STORAGE_ROOT_DIR}'")
-            def vars = varList.join(' ')
-            echo "vars: ${vars}"
-
-            sh 'terraform init -input=false'
-            sh "terraform plan ${vars} -out=tfplan -input=false"
-            sh 'terraform apply -input=false tfplan'
+            sh """
+cat <<EOF >>deployment.tfvars
+mw_username = "${mw_username}"
+mw_password = "${mw_password}"
+mode = "${params.MODE}"
+platform = "${params.PLATFORM}"
+storage_root_dir = "${env.STORAGE_ROOT_DIR}"
+EOF
+terraform init -input=false
+terraform plan -var-file='deployment.tfvars' -out=tfplan -input=false
+terraform apply -input=false tfplan
+"""
           }
         }
       }
