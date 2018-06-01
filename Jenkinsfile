@@ -46,7 +46,6 @@ pipeline {
         }
       }
     }
-    }
     stage('create-vm'){
       steps {
         container('generic-runner') {
