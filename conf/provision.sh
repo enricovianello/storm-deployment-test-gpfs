@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# Stop iptables ...
+service iptables stop
+
 # Install puppet
 echo "Install puppet ..."
 if rpm -qa | grep -q puppetlabs; then
