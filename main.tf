@@ -136,5 +136,21 @@ resource "null_resource" "provision" {
   ]
 }
 
+# Deploy StoRM
+resource "null_resource" "deploy" {
+  connection {
+    type = "ssh"
+        user = "centos"
+        agent = false
+        private_key = "${file("${var.ssh_key_file}")}"
+        host = "${var.vm_fip}"
+  }
 
+  provisioner "remote-exec" {
+        inline = "sudo sh deploy.sh"
+  }
 
+  depends_on = [
+    "null_resource.provision",
+  ]
+}

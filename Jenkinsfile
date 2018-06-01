@@ -26,13 +26,6 @@ pipeline {
   }
 
   stages {
-    stage('checkout') {
-      steps {
-        container('generic-runner') {
-          deleteDir()
-        } 
-      }
-    }
     stage('create-vm'){
       steps {
         container('generic-runner') {
