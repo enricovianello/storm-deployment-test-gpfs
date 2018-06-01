@@ -21,7 +21,7 @@ variable "mw_tenant" {
 
 variable "vm_image" {
   type = "string"
-  default = "centos-6-1804-x86_64-generic-gpfs-client"
+  default = "centos-6-1804-x86_64-generic-gpfs-client-certs"
 }
 
 variable "vm_name" {
