@@ -116,3 +116,25 @@ resource "null_resource" "bootstrap-gpfs" {
     "null_resource.configure",
   ]
 }
+
+# Provision script: run puppet and install useful stuff
+resource "null_resource" "provision" {
+  connection {
+    type = "ssh"
+        user = "centos"
+        agent = false
+        private_key = "${file("${var.ssh_key_file}")}"
+        host = "${var.vm_fip}"
+  }
+
+  provisioner "remote-exec" {
+        inline = "sudo sh provision.sh"
+  }
+
+  depends_on = [
+    "null_resource.bootstrap-gpfs",
+  ]
+}
+
+
+
