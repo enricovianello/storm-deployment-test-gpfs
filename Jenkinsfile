@@ -51,16 +51,5 @@ terraform apply -input=false tfplan
         }
       }
     }
-    stage('destroy'){
-      steps {
-        container('generic-runner') {
-          withCredentials([
-            usernamePassword(credentialsId: 'openstack-mw-devel-user', passwordVariable: 'mw_password', usernameVariable: 'mw_username')
-          ]) {
-            sh "terraform destroy -var 'mw_username=${mw_username}' -var 'mw_password=${mw_password}' -auto-approve"
-          }
-        }
-      }
-    }
   }
 }
