@@ -46,7 +46,7 @@ pipeline {
         }
       }
     }
-    stage('create-vm'){
+    stage('deploy-storm'){
       steps {
         container('generic-runner') {
           git url: "${env.REPOSITORY}", branch: "${env.BRANCH}"
