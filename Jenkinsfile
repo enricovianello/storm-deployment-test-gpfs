@@ -81,5 +81,16 @@ terraform apply -input=false tfplan
           unstableThreshold: 90])
       }
     }
+    stage('get-logs'){
+      steps {
+        container('generic-runner') {
+          sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'sudo chmod -R 777 /var/log/storm'")
+          sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'tar -zcvf storm-deployment-logs.tar.gz /var/log/storm/*.log /var/log/storm/webdav/*.log'")
+          sh("scp -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa centos@${env.VM_FQDN}:storm-deployment-logs.tar.gz .")
+          sh("tar -xvzf storm-deployment-logs.tar.gz")
+          archiveArtifacts "**"
+        }
+      }
+    }
   }
 }
