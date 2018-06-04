@@ -62,7 +62,7 @@ terraform apply -input=false tfplan
             string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
             string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
-            string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORM_STORAGE_ROOT_DIR)
+            string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR)
           ]
         }
         step ([$class: 'CopyArtifact',
