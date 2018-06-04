@@ -69,7 +69,7 @@ terraform apply -input=false tfplan
           projectName: 'storm-testsuite_runner',
           selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"]
         ])
-        archive 'reports/**'
+        archiveArtifacts "reports/**"
         step([$class: 'RobotPublisher',
           disableArchiveOutput: false,
           logFileName: 'log.html',
@@ -88,7 +88,7 @@ terraform apply -input=false tfplan
           sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'tar -zcvf storm-deployment-logs.tar.gz /var/log/storm/*.log /var/log/storm/webdav/*.log'")
           sh("scp -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa centos@${env.VM_FQDN}:storm-deployment-logs.tar.gz .")
           sh("tar -xvzf storm-deployment-logs.tar.gz")
-          archiveArtifacts "**"
+          archiveArtifacts "var/**"
         }
       }
     }
