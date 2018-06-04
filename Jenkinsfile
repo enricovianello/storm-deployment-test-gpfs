@@ -15,6 +15,10 @@ pipeline {
     string(name: 'VM_FLOATING_IP', defaultValue: '131.154.96.127', description: 'Floating IP')
     string(name: 'VM_FLAVOR', defaultValue: 'm1.medium', description: 'Machine flavor')
     string(name: 'VM_FQDN', defaultValue: 'cloud-vm127.cloud.cnaf.infn.it', description: 'Machine FQDN hostname')
+
+    choice(name: 'TESTSUITE_BRANCH', choices: 'develop\nmaster', description: '')
+    string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
+    string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
   }
 
   environment {
@@ -29,7 +33,7 @@ pipeline {
   }
 
   stages {
-    stage('create-and-run'){
+    stage('deploy'){
       steps {
         container('generic-runner') {
           withCredentials([
@@ -49,6 +53,32 @@ terraform apply -input=false tfplan
 """
           }
         }
+      }
+    }
+    stage("tests") {
+      steps {
+        script {
+          testsuite_job = build job: "storm-testsuite_runner", parameters: [
+            string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
+            string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
+            string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
+            string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORM_STORAGE_ROOT_DIR)
+          ]
+        }
+        step ([$class: 'CopyArtifact',
+          projectName: 'storm-testsuite_runner',
+          selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"]
+        ])
+        archive 'reports/**'
+        step([$class: 'RobotPublisher',
+          disableArchiveOutput: false,
+          logFileName: 'log.html',
+          otherFiles: '*.png',
+          outputFileName: 'output.xml',
+          outputPath: "reports",
+          passThreshold: 100,
+          reportFileName: 'report.html',
+          unstableThreshold: 90])
       }
     }
   }
