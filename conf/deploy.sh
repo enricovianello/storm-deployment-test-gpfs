@@ -3,8 +3,9 @@ set -ex
 
 MODE=$1
 PLATFORM=$2
-STORAGE_ROOT_DIR=$3
-HOSTNAME=$4
+STORM_REPO=$3
+STORAGE_ROOT_DIR=$4
+HOSTNAME=$5
 
 REPOSITORY="${REPOSITORY:-"https://github.com/italiangrid/storm-deployment-test.git"}"
 BRANCH="${BRANCH:-"gpfs"}"
@@ -21,6 +22,11 @@ if [ -z "$HOSTNAME" ]; then
     exit 1
 fi
 
+if [ -z "$STORM_REPO" ]; then
+    echo "Need to set STORM_REPO"
+    exit 1
+fi
+
 echo "Cloning ${REPOSITORY} ..."
 git clone ${REPOSITORY} --branch ${BRANCH}
 
@@ -30,6 +36,7 @@ STORAGE_ROOT_DIR=${STORAGE_ROOT_DIR} \
 HOSTNAME=${HOSTNAME} \
 MODE=${MODE} \
 PLATFORM=${PLATFORM} \
+STORM_REPO=${STORM_REPO} \
 sh run.sh
 
 popd
