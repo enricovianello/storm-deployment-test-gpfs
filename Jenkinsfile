@@ -43,6 +43,7 @@ pipeline {
           ]) {
             sh """
 cat <<EOF >>deployment.tfvars
+storm_repo = "${params.STORM_REPO}"
 mw_username = "${mw_username}"
 mw_password = "${mw_password}"
 mode = "${params.MODE}"
