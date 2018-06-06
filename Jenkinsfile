@@ -35,6 +35,13 @@ pipeline {
   }
 
   stages {
+    stage('destroy-vm'){
+      steps {
+        container('generic-runner') {
+          sh "sh scripts/delete-if-exists.sh ${params.VM_NAME}"
+        }
+      }
+    }
     stage('deploy'){
       steps {
         container('generic-runner') {
