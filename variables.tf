@@ -49,3 +49,7 @@ variable "storage_root_dir" {}
 variable "vm_fqdn_hostname" {
   default = "cloud-vm127.cloud.cnaf.infn.it"
 }
+
+variable "storm_repo" {
+  default = "http://italiangrid.github.io/storm/repo/storm_sl6.repo"
+}
