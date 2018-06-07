@@ -38,7 +38,7 @@ resource "null_resource" "configure" {
   }
 
   provisioner "file" {
-        source = "conf/"
+        source = "remote/"
         destination = "/home/centos"
   }
 
@@ -96,7 +96,7 @@ resource "null_resource" "deploy" {
   }
 
   provisioner "remote-exec" {
-        inline = "sudo sh deploy.sh ${var.mode} ${var.platform} ${var.storm_repo} ${var.storage_root_dir} ${var.vm_fqdn_hostname}"
+        inline = "sudo sh run.sh ${var.mode} ${var.platform} ${var.storm_repo} ${var.storage_root_dir} ${var.vm_fqdn_hostname}"
   }
 
   depends_on = [
