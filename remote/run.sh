@@ -21,11 +21,6 @@ if [ -z "$HOSTNAME" ]; then
   exit 1
 fi
 
-if [ -z "$STORM_REPO" ]; then
-  echo "Need to set STORM_REPO"
-  exit 1
-fi
-
 UMD_RELEASE_RPM="${UMD_RELEASE_RPM:-"http://repository.egi.eu/sw/production/umd/4/sl6/x86_64/updates/umd-release-4.1.3-1.el6.noarch.rpm"}"
 
 echo "Setting FQDN hostname as ${HOSTNAME} ..."
@@ -43,12 +38,10 @@ sed -i '/^STORM_DEFAULT_ROOT/d' data/siteinfo/update/storm.def
 echo "STORM_DEFAULT_ROOT=${STORAGE_ROOT_DIR}" >> data/siteinfo/update/storm.def
 
 echo "Running ${MODE} deployment for ${PLATFORM} with ..."
-echo "STORM_REPO: ${STORM_REPO}"
 echo "UMD_RELEASE_RPM: ${UMD_RELEASE_RPM}"
 echo "STORAGE_ROOT_DIR: ${STORAGE_ROOT_DIR}"
 echo "HOSTNAME: ${HOSTNAME}"
 
-STORM_REPO="${STORM_REPO}" \
 UMD_RELEASE_RPM="${UMD_RELEASE_RPM}" \
 STORAGE_ROOT_DIR="${STORAGE_ROOT_DIR}" \
 HOSTNAME="${HOSTNAME}" \

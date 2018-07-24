@@ -13,9 +13,6 @@ wget https://repo.cloud.cnaf.infn.it/repository/storm/stable/storm-stable-centos
 echo "Install UMD repositories ..."
 sh ${COMMON_PATH}/install-umd-repos.sh ${UMD_RELEASE_RPM}
 
-echo "Install StoRM repository ..."
-sh ${COMMON_PATH}/install-storm-repo.sh ${STORM_REPO}
-
 echo "Add storm user if not exists ..."
 id -u storm &>/dev/null || adduser -r storm
 
