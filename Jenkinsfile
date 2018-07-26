@@ -21,7 +21,7 @@ pipeline {
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
 
-    string(name: 'STORM_REPO', defaultValue: "https://ci.cloud.cnaf.infn.it/job/pkg.storm/job/release_1_11_14/lastSuccessfulBuild/artifact/rpms/storm-test-centos6.repo", description: '')
+    string(name: 'STORM_REPO', defaultValue: "https://repo.cloud.cnaf.infn.it/repository/storm/beta/storm-beta-centos6.repo", description: '')
   }
 
   environment {
