@@ -25,6 +25,9 @@ yum install -y emi-storm-backend-mp emi-storm-frontend-mp emi-storm-globus-gridf
 echo "Install GPFS native libs ..."
 yum install -y storm-native-libs-gpfs
 
+echo "Post clean script ..."
+sh ${COMMON_PATH}/post-clean.sh
+
 echo "Copy configuration ..."
 sh ${COMMON_PATH}/install-yaim-configuration.sh "$(pwd)/data/siteinfo/update"
 
