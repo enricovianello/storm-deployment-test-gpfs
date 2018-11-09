@@ -1,5 +1,5 @@
 pipeline {
-  
+
   agent { label 'generic' }
 
   options {
@@ -9,7 +9,7 @@ pipeline {
   }
 
   parameters {
-    choice(name: 'MODE', choices: "clean\nupdate", description: '')
+    choice(name: 'MODE', choices: "clean", description: '')
     choice(name: 'PLATFORM', choices: "centos6", description: '')
     string(name: 'VM_IMAGE', defaultValue: 'centos-6-1804-x86_64-generic-gpfs-client-certs', description: 'Cloud VM machine image source')
     string(name: 'VM_NAME', defaultValue: 'cloud-vm127', description: 'Cloud VM machine name')
@@ -20,8 +20,6 @@ pipeline {
     choice(name: 'TESTSUITE_BRANCH', choices: 'develop\nmaster', description: '')
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
-
-    string(name: 'STORM_REPO', defaultValue: "https://ci.cloud.cnaf.infn.it/job/pkg.storm/job/release_1_11_14/lastSuccessfulBuild/artifact/rpms/storm-test-centos6.repo", description: '')
   }
 
   environment {
@@ -51,7 +49,6 @@ pipeline {
           ]) {
             sh """
 cat <<EOF >>deployment.tfvars
-storm_repo = "${params.STORM_REPO}"
 mw_username = "${mw_username}"
 mw_password = "${mw_password}"
 mode = "${params.MODE}"

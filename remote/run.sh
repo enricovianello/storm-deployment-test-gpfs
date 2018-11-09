@@ -2,11 +2,8 @@
 set -ex
 trap "exit 1" TERM
 
-#MODE=$1
-#PLATFORM=$2
-#STORM_REPO=$3
-STORAGE_ROOT_DIR=$4
-HOSTNAME=$5
+STORAGE_ROOT_DIR=$1
+HOSTNAME=$2
 
 MODE="clean"
 #MODE="${MODE:-"clean"}"
