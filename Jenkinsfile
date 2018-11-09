@@ -1,5 +1,7 @@
+def testsuite_job
+
 pipeline {
-  
+
   agent { label 'generic' }
 
   options {
@@ -74,7 +76,8 @@ terraform apply -input=false tfplan
             string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
             string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR)
-          ]
+          ], propagate: false, wait: true
+          currentBuild.result=testsuite_job.result
         }
         step ([$class: 'CopyArtifact',
           projectName: 'storm-testsuite_runner',
@@ -102,6 +105,12 @@ terraform apply -input=false tfplan
           archiveArtifacts "var/**"
         }
       }
+    }
+  }
+  post {
+    always {
+      sh "wget -O console-output.log ${BUILD_URL}consoleText"
+      archiveArtifacts "console-output.log"
     }
   }
 }
