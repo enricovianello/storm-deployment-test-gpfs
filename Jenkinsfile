@@ -107,10 +107,4 @@ terraform apply -input=false tfplan
       }
     }
   }
-  post {
-    always {
-      sh "wget -O console-output.log ${BUILD_URL}consoleText"
-      archiveArtifacts "console-output.log"
-    }
-  }
 }
