@@ -2,13 +2,14 @@
 set -ex
 trap "exit 1" TERM
 
-MODE=$1
-PLATFORM=$2
-STORM_REPO=$3
+#MODE=$1
+#PLATFORM=$2
+#STORM_REPO=$3
 STORAGE_ROOT_DIR=$4
 HOSTNAME=$5
 
-MODE="${MODE:-"clean"}"
+MODE="clean"
+#MODE="${MODE:-"clean"}"
 PLATFORM="${PLATFORM:-"centos6"}"
 
 if [ -z "$STORAGE_ROOT_DIR" ]; then
