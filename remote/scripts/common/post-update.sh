@@ -17,4 +17,5 @@ fi
 # 1.11.15
 
 # StoRM WebDAV needs to know what host has not to be considered as a 3rd-party copy
+echo "" >> /etc/sysconfig/storm-webdav
 echo "STORM_WEBDAV_HOSTNAME_0=\"cloud-vm127.cloud.cnaf.infn.it\"" >> /etc/sysconfig/storm-webdav
