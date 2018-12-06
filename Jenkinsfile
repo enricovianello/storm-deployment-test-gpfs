@@ -19,7 +19,7 @@ pipeline {
     string(name: 'VM_FLAVOR', defaultValue: 'm1.medium', description: 'Machine flavor')
     string(name: 'VM_FQDN', defaultValue: 'cloud-vm127.cloud.cnaf.infn.it', description: 'Machine FQDN hostname')
 
-    choice(name: 'TESTSUITE_BRANCH', choices: 'release/1_11_15\ndevelop\nmaster', description: '')
+    choice(name: 'TESTSUITE_BRANCH', choices: 'release/1.11.15\ndevelop\nmaster', description: '')
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
 
@@ -71,7 +71,7 @@ terraform apply -input=false tfplan
     stage("tests") {
       steps {
         script {
-          testsuite_job = build job: "storm-testsuite_runner", parameters: [
+          testsuite_job = build job: "storm-testsuite_runner/${params.TESTSUITE_BRANCH}", parameters: [
             string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
             string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
