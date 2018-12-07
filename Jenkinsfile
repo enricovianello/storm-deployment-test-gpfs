@@ -13,7 +13,7 @@ pipeline {
   parameters {
     choice(name: 'MODE', choices: "clean\nupdate", description: '')
 
-    string(name: 'TESTSUITE_BRANCH', defaultValue: 'release/1_11_15', description: 'Testsuite branch')
+    string(name: 'TESTSUITE_BRANCH', defaultValue: 'nightly', description: 'Testsuite branch')
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
 
