@@ -17,10 +17,8 @@ pipeline {
     string(name: 'VM_FLAVOR', defaultValue: 'm1.medium', description: 'Machine flavor')
     string(name: 'VM_FQDN', defaultValue: 'cloud-vm127.cloud.cnaf.infn.it', description: 'Machine FQDN hostname')
 
-    string(name: 'TESTSUITE_BRANCH', defaultValue: 'v1.11.14', description: 'Testsuite branch')
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
-    string(name: 'TESTSUITE_IMAGE', defaultValue: 'italiangrid/storm-testsuite:latest', description: 'Testsuite branch')
 
     string(name: 'STORM_REPO', defaultValue: "https://repo.cloud.cnaf.infn.it/repository/storm/stable/storm-stable-centos6.repo", description: '')
   }
@@ -70,12 +68,12 @@ terraform apply -input=false tfplan
     stage("tests") {
       steps {
         script {
-          testsuite_job = build job: "storm-testsuite_runner/${params.TESTSUITE_BRANCH}", parameters: [
-            string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
+          testsuite_job = build job: "storm-testsuite_runner/master", parameters: [
+            string(name: 'TESTSUITE_BRANCH', value: 'v1.11.14'),
             string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
             string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR),
-            string(name: 'STORM_TESTSUITE_IMAGE', value: params.TESTSUITE_IMAGE)
+            string(name: 'STORM_TESTSUITE_IMAGE', value: 'italiangrid/storm-testsuite:latest')
           ]
         }
         step ([$class: 'CopyArtifact',
