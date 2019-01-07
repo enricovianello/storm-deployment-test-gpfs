@@ -75,7 +75,7 @@ terraform apply -input=false tfplan
           currentBuild.result=testsuite_job.result
         }
         step ([$class: 'CopyArtifact',
-          projectName: "${testsuite_job.getProjectName()}",
+          projectName: "${testsuite_job.getFullProjectName()}",
           selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"]
         ])
         archiveArtifacts "reports/**"
