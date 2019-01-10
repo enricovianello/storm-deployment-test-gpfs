@@ -75,7 +75,7 @@ terraform apply -input=false tfplan
           ]
         }
         step ([$class: 'CopyArtifact',
-          projectName: 'storm-testsuite_runner',
+          projectName: 'storm-testsuite_runner/master',
           selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"]
         ])
         archiveArtifacts "reports/**"
