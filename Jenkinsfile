@@ -69,11 +69,9 @@ terraform apply -input=false tfplan
       steps {
         script {
           testsuite_job = build job: "storm-testsuite_runner/master", parameters: [
-            string(name: 'TESTSUITE_BRANCH', value: 'v1.11.14'),
             string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
             string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR),
-            string(name: 'STORM_TESTSUITE_IMAGE', value: 'italiangrid/storm-testsuite:latest')
           ]
         }
         step ([$class: 'CopyArtifact',
