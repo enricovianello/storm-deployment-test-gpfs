@@ -1,5 +1,7 @@
+def testsuite_job
+
 pipeline {
-  
+
   agent { label 'generic' }
 
   options {
@@ -10,14 +12,8 @@ pipeline {
 
   parameters {
     choice(name: 'MODE', choices: "clean\nupdate", description: '')
-    choice(name: 'PLATFORM', choices: "centos6", description: '')
-    string(name: 'VM_IMAGE', defaultValue: 'centos-6-1804-x86_64-generic-gpfs-client-certs', description: 'Cloud VM machine image source')
-    string(name: 'VM_NAME', defaultValue: 'cloud-vm127', description: 'Cloud VM machine name')
-    string(name: 'VM_FLOATING_IP', defaultValue: '131.154.96.127', description: 'Floating IP')
-    string(name: 'VM_FLAVOR', defaultValue: 'm1.medium', description: 'Machine flavor')
-    string(name: 'VM_FQDN', defaultValue: 'cloud-vm127.cloud.cnaf.infn.it', description: 'Machine FQDN hostname')
 
-    choice(name: 'TESTSUITE_BRANCH', choices: 'develop\nmaster', description: '')
+    string(name: 'TESTSUITE_BRANCH', defaultValue: 'nightly', description: 'Testsuite branch')
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
 
@@ -27,19 +23,20 @@ pipeline {
   environment {
     REPOSITORY = "https://github.com/italiangrid/storm-deployment-test"
     BRANCH = "gpfs"
-    VM_IMAGE = "${params.VM_IMAGE}"
-    VM_NAME = "${params.VM_NAME}"
-    VM_FLOATING_IP = "${params.VM_FLOATING_IP}"
-    VM_FLAVOR = "${params.VM_FLAVOR}"
-    VM_FQDN = "${params.VM_FQDN}"
+    VM_IMAGE = "centos-6-1804-x86_64-generic-gpfs-client-certs"
+    VM_NAME = "cloud-vm127"
+    VM_FLOATING_IP = "131.154.96.127"
+    VM_FLAVOR = "m1.medium"
+    VM_FQDN = "cloud-vm127.cloud.cnaf.infn.it"
     STORAGE_ROOT_DIR = "/storage/${BUILD_TAG}"
+    PLATFORM = "centos6"
   }
 
   stages {
     stage('destroy-vm'){
       steps {
         container('generic-runner') {
-          sh "sh scripts/delete-if-exists.sh ${params.VM_NAME}"
+          sh "sh scripts/delete-if-exists.sh ${env.VM_NAME}"
         }
       }
     }
@@ -55,7 +52,7 @@ storm_repo = "${params.STORM_REPO}"
 mw_username = "${mw_username}"
 mw_password = "${mw_password}"
 mode = "${params.MODE}"
-platform = "${params.PLATFORM}"
+platform = "${env.PLATFORM}"
 storage_root_dir = "${env.STORAGE_ROOT_DIR}"
 EOF
 terraform init -input=false
@@ -69,15 +66,16 @@ terraform apply -input=false tfplan
     stage("tests") {
       steps {
         script {
-          testsuite_job = build job: "storm-testsuite_runner", parameters: [
+          testsuite_job = build job: "storm-testsuite_runner/${params.TESTSUITE_BRANCH}", parameters: [
             string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
-            string(name: 'STORM_BE_HOST', value: params.VM_FQDN),
+            string(name: 'STORM_BE_HOST', value: env.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
             string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR)
-          ]
+          ], propagate: false, wait: true
+          currentBuild.result=testsuite_job.result
         }
         step ([$class: 'CopyArtifact',
-          projectName: 'storm-testsuite_runner',
+          projectName: "${testsuite_job.getFullProjectName()}",
           selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"]
         ])
         archiveArtifacts "reports/**"

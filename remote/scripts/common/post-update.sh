@@ -13,3 +13,9 @@ if [ -a "namespace-1.5.0.xsd.rpmnew" ]; then
     mv namespace-1.5.0.xsd namespace-1.5.0.xsd.saved
     mv namespace-1.5.0.xsd.rpmnew namespace-1.5.0.xsd
 fi
+
+# 1.11.15
+
+# StoRM WebDAV needs to know what host has not to be considered as a 3rd-party copy
+echo "" >> /etc/sysconfig/storm-webdav
+echo "STORM_WEBDAV_HOSTNAME_0=\"cloud-vm127.cloud.cnaf.infn.it\"" >> /etc/sysconfig/storm-webdav
