@@ -13,3 +13,5 @@ if [ -a "namespace-1.5.0.xsd.rpmnew" ]; then
     mv namespace-1.5.0.xsd namespace-1.5.0.xsd.saved
     mv namespace-1.5.0.xsd.rpmnew namespace-1.5.0.xsd
 fi
+
+sh fix-webdav.sh

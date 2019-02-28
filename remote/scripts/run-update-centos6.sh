@@ -7,9 +7,6 @@ COMMON_PATH="./scripts/common"
 hostname ${HOSTNAME}
 hostname -f
 
-echo "Install stable StoRM repo ..."
-wget https://repo.cloud.cnaf.infn.it/repository/storm/stable/storm-stable-centos6.repo -O /etc/yum.repos.d/storm-stable.repo
-
 echo "Install UMD repositories ..."
 sh ${COMMON_PATH}/install-umd-repos.sh ${UMD_RELEASE_RPM}
 
@@ -29,8 +26,8 @@ sh ${COMMON_PATH}/install-yaim-configuration.sh "$(pwd)/data/siteinfo/clean"
 echo "Lauch YAIM ..."
 /opt/glite/yaim/bin/yaim -c -s /etc/storm/siteinfo/storm.def -n se_storm_backend -n se_storm_frontend -n se_storm_gridftp -n se_storm_webdav
 
-echo "Install StoRM repository ..."
-sh ${COMMON_PATH}/install-storm-repo.sh ${STORM_REPO}
+echo "Install stable StoRM repo ..."
+wget https://repo.cloud.cnaf.infn.it/repository/storm/stable/storm-stable-centos6.repo -O /etc/yum.repos.d/storm-stable.repo
 
 echo "Update all packages ..."
 yum clean all
