@@ -38,6 +38,7 @@ if [ $? != 0 ]; then
     exit 1
 fi
 
+echo "Post update script ..."
 sh ${COMMON_PATH}/post-update.sh
 
 echo "Update configuration ..."
