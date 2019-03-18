@@ -18,12 +18,13 @@ pipeline {
     MODE = "clean"
     REPOSITORY = "https://github.com/italiangrid/storm-deployment-test"
     BRANCH = "gpfs"
-    VM_IMAGE = "${params.VM_IMAGE}"
-    VM_NAME = "${params.VM_NAME}"
-    VM_FLOATING_IP = "${params.VM_FLOATING_IP}"
-    VM_FLAVOR = "${params.VM_FLAVOR}"
-    VM_FQDN = "${params.VM_FQDN}"
+    VM_IMAGE = "centos-6-1804-x86_64-generic-gpfs-client-certs"
+    VM_NAME = "cloud-vm127"
+    VM_FLOATING_IP = "131.154.96.127"
+    VM_FLAVOR = "m1.medium"
+    VM_FQDN = "cloud-vm127.cloud.cnaf.infn.it"
     STORAGE_ROOT_DIR = "/storage/${BUILD_TAG}"
+    PLATFORM = "centos6"
   }
 
   stages {
