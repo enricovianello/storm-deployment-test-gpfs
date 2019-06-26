@@ -1,6 +1,16 @@
+@Library('sd')_
+def kubeLabel = getKubeLabel()
+
 pipeline {
 
-  agent { label 'generic' }
+  agent {
+    kubernetes {
+      label "${kubeLabel}"
+      cloud 'Kube mwdevel'
+      defaultContainer 'runner'
+      inheritFrom 'ci-template'
+    }
+  }
 
   options {
     timeout(time: 3, unit: 'HOURS')
