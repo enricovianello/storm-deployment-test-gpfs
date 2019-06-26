@@ -1,8 +1,17 @@
+@Library('sd')_
+def kubeLabel = getKubeLabel()
 def testsuite_job
 
 pipeline {
 
-  agent { label 'generic' }
+  agent {
+    kubernetes {
+      label "${kubeLabel}"
+      cloud 'Kube mwdevel'
+      defaultContainer 'runner'
+      inheritFrom 'ci-template'
+    }
+  }
 
   options {
     timeout(time: 3, unit: 'HOURS')
@@ -33,18 +42,15 @@ pipeline {
   stages {
     stage('destroy-vm'){
       steps {
-        container('generic-runner') {
-          sh "sh scripts/delete-if-exists.sh ${env.VM_NAME}"
-        }
+        sh "sh scripts/delete-if-exists.sh ${env.VM_NAME}"
       }
     }
     stage('deploy'){
       steps {
-        container('generic-runner') {
-          withCredentials([
-            usernamePassword(credentialsId: 'openstack-mw-devel-user', passwordVariable: 'mw_password', usernameVariable: 'mw_username')
-          ]) {
-            sh """
+        withCredentials([
+          usernamePassword(credentialsId: 'openstack-mw-devel-user', passwordVariable: 'mw_password', usernameVariable: 'mw_username')
+        ]) {
+          sh """
 cat <<EOF >>deployment.tfvars
 storm_repo = "${env.STORM_REPO}"
 mw_username = "${mw_username}"
@@ -57,7 +63,6 @@ terraform init -input=false
 terraform plan -var-file='deployment.tfvars' -out=tfplan -input=false
 terraform apply -input=false tfplan
 """
-          }
         }
       }
     }
@@ -90,13 +95,11 @@ terraform apply -input=false tfplan
     }
     stage('get-logs'){
       steps {
-        container('generic-runner') {
-          sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'sudo chmod -R 777 /var/log/storm'")
-          sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'tar -zcvf storm-deployment-logs.tar.gz /var/log/storm/*.log /var/log/storm/webdav/*.log'")
-          sh("scp -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa centos@${env.VM_FQDN}:storm-deployment-logs.tar.gz .")
-          sh("tar -xvzf storm-deployment-logs.tar.gz")
-          archiveArtifacts "var/**"
-        }
+        sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'sudo chmod -R 777 /var/log/storm'")
+        sh("ssh -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa -C centos@${env.VM_FQDN} 'tar -zcvf storm-deployment-logs.tar.gz /var/log/storm/*.log /var/log/storm/webdav/*.log'")
+        sh("scp -o 'StrictHostKeyChecking=no' -i /home/jenkins/.ssh/id_rsa centos@${env.VM_FQDN}:storm-deployment-logs.tar.gz .")
+        sh("tar -xvzf storm-deployment-logs.tar.gz")
+        archiveArtifacts "var/**"
       }
     }
   }
