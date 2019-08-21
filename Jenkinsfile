@@ -20,7 +20,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'TESTSUITE_BRANCH', defaultValue: 'nightly', description: 'Testsuite branch')
+    string(name: 'TESTSUITE_BRANCH', defaultValue: 'v1.11.15', description: 'Testsuite branch')
     string(name: 'TESTSUITE_EXCLUDE', defaultValue: "to-be-fixedORcdmi", description: '')
     string(name: 'TESTSUITE_SUITE', defaultValue: "tests", description: '')
   }
