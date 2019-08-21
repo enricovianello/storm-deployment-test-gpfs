@@ -22,6 +22,9 @@ yum install -y storm-native-libs-gpfs
 echo "Copy configuration ..."
 sh ${COMMON_PATH}/install-yaim-configuration.sh "$(pwd)/data/siteinfo/update"
 
+echo "Run pre-configuration script ..."
+sh ${COMMON_PATH}/pre-config-setup.sh
+
 echo "Configure with YAIM ..."
 /opt/glite/yaim/bin/yaim -c -s /etc/storm/siteinfo/storm.def -n se_storm_backend -n se_storm_frontend -n se_storm_gridftp -n se_storm_webdav
 
