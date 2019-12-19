@@ -73,7 +73,7 @@ terraform apply -input=false tfplan
         script {
           testsuite_job = build job: "storm-testsuite_runner/${params.TESTSUITE_BRANCH}", parameters: [
             string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
-            string(name: 'STORM_BE_HOST', value: env.VM_FQDN),
+            string(name: 'STORM_BACKEND_HOSTNAME', value: env.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
             string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR)
           ], propagate: false, wait: true
@@ -81,7 +81,9 @@ terraform apply -input=false tfplan
         }
         step ([$class: 'CopyArtifact',
           projectName: "${testsuite_job.getFullProjectName()}",
-          selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"]
+          selector: [$class: 'SpecificBuildSelector', buildNumber: "${testsuite_job.getNumber()}"],
+          flatten: true,
+          target: "reports"
         ])
         archiveArtifacts "reports/**"
         step([$class: 'RobotPublisher',
