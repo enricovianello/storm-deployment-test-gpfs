@@ -74,6 +74,8 @@ terraform apply -input=false tfplan
           testsuite_job = build job: "storm-testsuite_runner/${params.TESTSUITE_BRANCH}", parameters: [
             string(name: 'TESTSUITE_BRANCH', value: params.TESTSUITE_BRANCH),
             string(name: 'STORM_BACKEND_HOSTNAME', value: env.VM_FQDN),
+            string(name: 'STORM_WEBDAV_HOSTNAME', value: env.VM_FQDN),
+            string(name: 'STORM_GRIDFTP_HOSTNAME', value: env.VM_FQDN),
             string(name: 'TESTSUITE_EXCLUDE', value: params.TESTSUITE_EXCLUDE),
             string(name: 'STORM_STORAGE_ROOT_DIR', value: env.STORAGE_ROOT_DIR)
           ], propagate: false, wait: true
